@@ -26,7 +26,7 @@ func (f *filterBase) buildParameters(filterType string) []string {
 	if f.StreamIndex >= 0 {
 		idx = fmt.Sprintf(":%d", f.StreamIndex)
 	}
-	return []string{fmt.Sprintf("-filter:%s%s", filterType, idx), fmt.Sprintf(`"%s"`, strings.Join(f.filters, ", "))}
+	return []string{fmt.Sprintf("-filter:%s%s", filterType, idx), strings.Join(f.filters, ", ")}
 }
 
 //////////

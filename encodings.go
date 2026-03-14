@@ -116,7 +116,7 @@ func (e *X264VideoEncoding) GetParameters() []string {
 		if e.Pass > 0 {
 			extra["-pass"] = fmt.Sprintf("%d", e.Pass)
 			if e.PassLogFile != "" {
-				extra["-passlogfile"] = fmt.Sprintf(`"%s"`, e.PassLogFile)
+				extra["-passlogfile"] = e.PassLogFile
 			}
 		}
 	} else {
@@ -165,7 +165,7 @@ func (e *AacAudioEncoding) SetChannelLayout(l string) *AacAudioEncoding {
 func (e *AacAudioEncoding) GetParameters() []string {
 	extra := map[string]string{"-b:a": fmt.Sprintf("%dk", e.Bitrate)}
 	if e.ChannelLayout != "" {
-		extra["-channel_layout"] = fmt.Sprintf(`"%s"`, e.ChannelLayout)
+		extra["-channel_layout"] = e.ChannelLayout
 	}
 	return e.buildParam("a", "aac", extra)
 }
@@ -194,7 +194,7 @@ func (e *Ac3AudioEncoding) SetChannelLayout(l string) *Ac3AudioEncoding {
 func (e *Ac3AudioEncoding) GetParameters() []string {
 	extra := map[string]string{"-b:a": fmt.Sprintf("%dk", e.Bitrate)}
 	if e.ChannelLayout != "" {
-		extra["-channel_layout"] = fmt.Sprintf(`"%s"`, e.ChannelLayout)
+		extra["-channel_layout"] = e.ChannelLayout
 	}
 	return e.buildParam("a", "ac3", extra)
 }

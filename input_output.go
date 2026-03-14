@@ -1,9 +1,5 @@
 package goffmpeg
 
-import (
-	"fmt"
-)
-
 //////////
 // FileBase
 //////////
@@ -13,7 +9,7 @@ type FileBase struct {
 }
 
 func (f *FileBase) GetParameters() []string {
-	return []string{fmt.Sprintf(`"%s"`, f.FilePath)}
+	return []string{f.FilePath}
 }
 
 //////////
