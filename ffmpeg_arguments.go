@@ -239,27 +239,27 @@ func (f *FFmpegArguments) buildArguments() []string {
 		args = append(args, m.GetParameters()...)
 	}
 	if f.MapChaptersIndex != nil {
-		args = append(args, fmt.Sprintf("-map_chapters %d", *f.MapChaptersIndex))
+		args = append(args, "-map_chapters", fmt.Sprintf("%d", *f.MapChaptersIndex))
 	}
 	if f.MapMetaData {
 		args = append(args, "-map_metadata")
 	}
 	if f.MkvDefaultMode != MkvDefaultModeNone {
-		args = append(args, fmt.Sprintf("-default_mode %s", f.MkvDefaultMode))
+		args = append(args, "-default_mode", string(f.MkvDefaultMode))
 	}
 	if f.MaxInterleaveDelta != nil {
-		args = append(args, fmt.Sprintf("-max_interleave_delta %d", *f.MaxInterleaveDelta))
+		args = append(args, "-max_interleave_delta", fmt.Sprintf("%d", *f.MaxInterleaveDelta))
 	}
 	if f.FastStart {
-		args = append(args, "-movflags faststart")
+		args = append(args, "-movflags", "faststart")
 	}
 	if f.Aspect != "" {
-		args = append(args, fmt.Sprintf("-aspect %s", f.Aspect))
+		args = append(args, "-aspect", f.Aspect)
 	}
 	if f.Async != nil {
-		args = append(args, fmt.Sprintf("-async %d", *f.Async))
+		args = append(args, "-async", fmt.Sprintf("%d", *f.Async))
 	}
-	args = append(args, "-audio_service_type ma")
+	args = append(args, "-audio_service_type", "ma")
 	if f.Output != nil {
 		args = append(args, f.Output.GetParameters()...)
 	}
