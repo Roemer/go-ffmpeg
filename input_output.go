@@ -14,7 +14,7 @@ type FileBase struct {
 }
 
 func (f *FileBase) GetParameterString() string {
-	return fmt.Sprintf("%q", f.FilePath)
+	return fmt.Sprintf("\"%s\"", f.FilePath)
 }
 
 //////////
