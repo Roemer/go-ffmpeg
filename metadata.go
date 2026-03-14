@@ -58,7 +58,7 @@ func (m *Metadata) Rotate(degrees int) *Metadata {
 }
 func (m *Metadata) Custom(key, value string, pack bool) *Metadata { return m.set(key, value, pack) }
 
-func (m *Metadata) GetParameterStrings() []string {
+func (m *Metadata) GetParameters() []string {
 	var prefix strings.Builder
 	prefix.WriteString("-metadata")
 	if m.StreamIndex >= 0 {
@@ -78,7 +78,7 @@ func (m *Metadata) GetParameterStrings() []string {
 		if v.PackInQuotes {
 			val = fmt.Sprintf("%q", val)
 		}
-		result = append(result, fmt.Sprintf("%s %s=%s", p, k, val))
+		result = append(result, p, fmt.Sprintf("%s=%s", k, val))
 	}
 	return result
 }

@@ -31,7 +31,7 @@ func (d *Disposition) Original() *Disposition {
 }
 func (d *Disposition) Dub() *Disposition { d.dispositions = append(d.dispositions, "dub"); return d }
 
-func (d *Disposition) GetParameterStrings() []string {
+func (d *Disposition) GetParameters() []string {
 	var value string
 	if d.isClear {
 		value = "0"
@@ -41,5 +41,5 @@ func (d *Disposition) GetParameterStrings() []string {
 	if value == "" {
 		return nil
 	}
-	return []string{fmt.Sprintf("-disposition:%s:%d %s", d.StreamType, d.StreamIndex, value)}
+	return []string{fmt.Sprintf("-disposition:%s:%d", d.StreamType, d.StreamIndex), value}
 }

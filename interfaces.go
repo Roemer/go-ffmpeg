@@ -1,11 +1,11 @@
 package goffmpeg
 
 type ISingleParameter interface {
-	GetParameterString() string
+	GetParameters() []string
 }
 
 type IMultiParameter interface {
-	GetParameterStrings() []string
+	GetParameters() []string
 }
 
 type IOutput interface {

@@ -37,9 +37,10 @@ func (m *Mapping) SetOptional(optional bool) *Mapping {
 	return m
 }
 
-func (m *Mapping) GetParameterString() string {
+func (m *Mapping) GetParameters() []string {
+	params := []string{}
+	params = append(params, "-map")
 	var sb strings.Builder
-	sb.WriteString("-map ")
 	if m.Negative {
 		sb.WriteString("-")
 	}
@@ -53,5 +54,6 @@ func (m *Mapping) GetParameterString() string {
 	if m.Optional {
 		sb.WriteString("?")
 	}
-	return sb.String()
+	params = append(params, sb.String())
+	return params
 }

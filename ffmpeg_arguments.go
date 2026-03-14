@@ -176,14 +176,14 @@ func (f *FFmpegArguments) buildArguments() []string {
 	if f.XError {
 		args = append(args, "-xerror")
 	}
-	args = append(args, fmt.Sprintf("-loglevel %s", f.LogLevel))
+	args = append(args, "-loglevel", string(f.LogLevel))
 	if f.Stats {
-		args = append(args, "-stats", fmt.Sprintf("-stats_period %d", f.StatsPeriod))
+		args = append(args, "-stats", "-stats_period", fmt.Sprintf("%d", f.StatsPeriod))
 	} else {
 		args = append(args, "-nostats")
 	}
 	if f.IgnoreErrors {
-		args = append(args, "-err_detect ignore_err")
+		args = append(args, "-err_detect", "ignore_err")
 	}
 	if f.Overwrite {
 		args = append(args, "-y")
@@ -201,48 +201,42 @@ func (f *FFmpegArguments) buildArguments() []string {
 		args = append(args, "-dn")
 	}
 	if f.Threads != nil {
-		args = append(args,
-			fmt.Sprintf("-threads %d", *f.Threads),
-			fmt.Sprintf("-filter_threads %d", *f.Threads),
-			fmt.Sprintf("-filter_complex_threads %d", *f.Threads),
-		)
+		args = append(args, "-threads", fmt.Sprintf("%d", *f.Threads))
+		args = append(args, "-filter_threads", fmt.Sprintf("%d", *f.Threads))
+		args = append(args, "-filter_complex_threads", fmt.Sprintf("%d", *f.Threads))
 	}
 	if f.FormatFlags != "" {
-		args = append(args, fmt.Sprintf("-fflags %s", f.FormatFlags))
+		args = append(args, "-fflags", f.FormatFlags)
 	}
 	for _, inp := range f.InputFiles {
-		args = append(args, inp.GetParameterString())
+		args = append(args, inp.GetParameters()...)
 	}
 	if f.Threads != nil {
-		args = append(args, fmt.Sprintf("-threads %d", *f.Threads))
+		args = append(args, "-threads", fmt.Sprintf("%d", *f.Threads))
 	}
 	for _, vf := range f.VideoFilters {
-		if s := vf.GetParameterString(); s != "" {
-			args = append(args, s)
-		}
+		args = append(args, vf.GetParameters()...)
 	}
 	for _, af := range f.AudioFilters {
-		if s := af.GetParameterString(); s != "" {
-			args = append(args, s)
-		}
+		args = append(args, af.GetParameters()...)
 	}
 	if f.CopyAll {
 		args = append(args, "-c copy")
 	}
 	for _, m := range f.Mappings {
-		args = append(args, m.GetParameterString())
+		args = append(args, m.GetParameters()...)
 	}
 	for _, ve := range f.VideoEncodings {
-		args = append(args, ve.GetParameterStrings()...)
+		args = append(args, ve.GetParameters()...)
 	}
 	for _, ae := range f.AudioEncodings {
-		args = append(args, ae.GetParameterStrings()...)
+		args = append(args, ae.GetParameters()...)
 	}
 	for _, d := range f.Dispositions {
-		args = append(args, d.GetParameterStrings()...)
+		args = append(args, d.GetParameters()...)
 	}
 	for _, m := range f.Metadatas {
-		args = append(args, m.GetParameterStrings()...)
+		args = append(args, m.GetParameters()...)
 	}
 	if f.MapChaptersIndex != nil {
 		args = append(args, fmt.Sprintf("-map_chapters %d", *f.MapChaptersIndex))
@@ -267,7 +261,7 @@ func (f *FFmpegArguments) buildArguments() []string {
 	}
 	args = append(args, "-audio_service_type ma")
 	if f.Output != nil {
-		args = append(args, f.Output.GetParameterString())
+		args = append(args, f.Output.GetParameters()...)
 	}
 	return args
 }

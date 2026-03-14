@@ -2,7 +2,6 @@ package goffmpeg
 
 import (
 	"fmt"
-	"strings"
 )
 
 //////////
@@ -13,8 +12,8 @@ type FileBase struct {
 	FilePath string
 }
 
-func (f *FileBase) GetParameterString() string {
-	return fmt.Sprintf("\"%s\"", f.FilePath)
+func (f *FileBase) GetParameters() []string {
+	return []string{fmt.Sprintf(`"%s"`, f.FilePath)}
 }
 
 //////////
@@ -41,14 +40,15 @@ func (i *InputFile) UseConcatDemuxer(save bool) *InputFile {
 	return i
 }
 
-func (i *InputFile) GetParameterString() string {
-	sb := strings.Builder{}
+func (i *InputFile) GetParameters() []string {
+	params := []string{}
 	if i.Format != "" {
-		fmt.Fprintf(&sb, "-f %s ", i.Format)
-		fmt.Fprintf(&sb, "-safe %s ", Ternary(i.Save, "1", "0"))
+		params = append(params, "-f", i.Format)
+		params = append(params, "-safe", Ternary(i.Save, "1", "0"))
 	}
-	fmt.Fprintf(&sb, "-i %s", i.FileBase.GetParameterString())
-	return sb.String()
+	params = append(params, "-i")
+	params = append(params, i.FileBase.GetParameters()...)
+	return params
 }
 
 //////////
@@ -71,8 +71,8 @@ func (o *OutputFile) isOutput() {}
 
 type NullOutput struct{}
 
-func (n *NullOutput) GetParameterString() string {
-	return "-f null NUL"
+func (n *NullOutput) GetParameters() []string {
+	return []string{"-f", "null", "NUL"}
 }
 
 func (n *NullOutput) isOutput() {}

@@ -16,13 +16,13 @@ func (e *encodingBase) buildParam(encodingType, codecName string, extra map[stri
 	if e.StreamIndex >= 0 {
 		codec += fmt.Sprintf(":%d", e.StreamIndex)
 	}
-	params = append(params, fmt.Sprintf("%s %s", codec, codecName))
+	params = append(params, codec, codecName)
 	for k, v := range extra {
 		key := k
 		if e.StreamIndex >= 0 {
 			key += fmt.Sprintf(":%d", e.StreamIndex)
 		}
-		params = append(params, fmt.Sprintf("%s %s", key, v))
+		params = append(params, key, v)
 	}
 	return params
 }
@@ -39,7 +39,7 @@ func NewVideoCopyEncoding() *VideoCopyEncoding {
 
 func (e *VideoCopyEncoding) SetIndex(i int) *VideoCopyEncoding { e.StreamIndex = i; return e }
 
-func (e *VideoCopyEncoding) GetParameterStrings() []string {
+func (e *VideoCopyEncoding) GetParameters() []string {
 	return e.buildParam("v", "copy", nil)
 }
 
@@ -55,7 +55,7 @@ func NewFFV1VideoEncoding() *FFV1VideoEncoding {
 
 func (e *FFV1VideoEncoding) SetIndex(i int) *FFV1VideoEncoding { e.StreamIndex = i; return e }
 
-func (e *FFV1VideoEncoding) GetParameterStrings() []string {
+func (e *FFV1VideoEncoding) GetParameters() []string {
 	return e.buildParam("v", "ffv1", map[string]string{
 		"-level":   "1",
 		"-coder":   "1",
@@ -103,7 +103,7 @@ func (e *X264VideoEncoding) FromSettings(s *X264Settings) *X264VideoEncoding {
 	return e
 }
 
-func (e *X264VideoEncoding) GetParameterStrings() []string {
+func (e *X264VideoEncoding) GetParameters() []string {
 	extra := map[string]string{
 		"-preset":    string(e.Preset),
 		"-tune":      string(e.Tune),
@@ -116,7 +116,7 @@ func (e *X264VideoEncoding) GetParameterStrings() []string {
 		if e.Pass > 0 {
 			extra["-pass"] = fmt.Sprintf("%d", e.Pass)
 			if e.PassLogFile != "" {
-				extra["-passlogfile"] = fmt.Sprintf("%q", e.PassLogFile)
+				extra["-passlogfile"] = fmt.Sprintf(`"%s"`, e.PassLogFile)
 			}
 		}
 	} else {
@@ -137,7 +137,7 @@ func NewAudioCopyEncoding() *AudioCopyEncoding {
 
 func (e *AudioCopyEncoding) SetIndex(i int) *AudioCopyEncoding { e.StreamIndex = i; return e }
 
-func (e *AudioCopyEncoding) GetParameterStrings() []string {
+func (e *AudioCopyEncoding) GetParameters() []string {
 	return e.buildParam("a", "copy", nil)
 }
 
@@ -162,10 +162,10 @@ func (e *AacAudioEncoding) SetChannelLayout(l string) *AacAudioEncoding {
 	return e
 }
 
-func (e *AacAudioEncoding) GetParameterStrings() []string {
+func (e *AacAudioEncoding) GetParameters() []string {
 	extra := map[string]string{"-b:a": fmt.Sprintf("%dk", e.Bitrate)}
 	if e.ChannelLayout != "" {
-		extra["-channel_layout"] = fmt.Sprintf("%q", e.ChannelLayout)
+		extra["-channel_layout"] = fmt.Sprintf(`"%s"`, e.ChannelLayout)
 	}
 	return e.buildParam("a", "aac", extra)
 }
@@ -191,10 +191,10 @@ func (e *Ac3AudioEncoding) SetChannelLayout(l string) *Ac3AudioEncoding {
 	return e
 }
 
-func (e *Ac3AudioEncoding) GetParameterStrings() []string {
+func (e *Ac3AudioEncoding) GetParameters() []string {
 	extra := map[string]string{"-b:a": fmt.Sprintf("%dk", e.Bitrate)}
 	if e.ChannelLayout != "" {
-		extra["-channel_layout"] = fmt.Sprintf("%q", e.ChannelLayout)
+		extra["-channel_layout"] = fmt.Sprintf(`"%s"`, e.ChannelLayout)
 	}
 	return e.buildParam("a", "ac3", extra)
 }
@@ -215,6 +215,6 @@ func NewMp3AudioEncoding() *Mp3AudioEncoding {
 func (e *Mp3AudioEncoding) SetIndex(i int) *Mp3AudioEncoding   { e.StreamIndex = i; return e }
 func (e *Mp3AudioEncoding) SetBitrate(b int) *Mp3AudioEncoding { e.Bitrate = b; return e }
 
-func (e *Mp3AudioEncoding) GetParameterStrings() []string {
+func (e *Mp3AudioEncoding) GetParameters() []string {
 	return e.buildParam("a", "libmp3lame", map[string]string{"-b:a": fmt.Sprintf("%dk", e.Bitrate)})
 }

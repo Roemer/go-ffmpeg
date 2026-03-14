@@ -18,15 +18,15 @@ func (f *filterBase) addFilter(s string) {
 	f.filters = append(f.filters, s)
 }
 
-func (f *filterBase) buildParameterString(filterType string) string {
+func (f *filterBase) buildParameters(filterType string) []string {
 	if len(f.filters) == 0 {
-		return ""
+		return nil
 	}
 	idx := ""
 	if f.StreamIndex >= 0 {
 		idx = fmt.Sprintf(":%d", f.StreamIndex)
 	}
-	return fmt.Sprintf(`-filter:%s%s "%s"`, filterType, idx, strings.Join(f.filters, ", "))
+	return []string{fmt.Sprintf("-filter:%s%s", filterType, idx), fmt.Sprintf(`"%s"`, strings.Join(f.filters, ", "))}
 }
 
 //////////
@@ -43,8 +43,8 @@ func NewVideoFilter() *VideoFilter {
 
 func (v *VideoFilter) SetIndex(i int) *VideoFilter { v.StreamIndex = i; return v }
 
-func (v *VideoFilter) GetParameterString() string {
-	return v.buildParameterString("v")
+func (v *VideoFilter) GetParameters() []string {
+	return v.buildParameters("v")
 }
 
 func (v *VideoFilter) Scale(width, height int, flags ScalerFlags) *VideoFilter {
@@ -84,8 +84,8 @@ func NewAudioFilter() *AudioFilter {
 
 func (a *AudioFilter) SetIndex(i int) *AudioFilter { a.StreamIndex = i; return a }
 
-func (a *AudioFilter) GetParameterString() string {
-	return a.buildParameterString("a")
+func (a *AudioFilter) GetParameters() []string {
+	return a.buildParameters("a")
 }
 
 func (a *AudioFilter) Volumedetect() *AudioFilter { a.addFilter("volumedetect"); return a }
