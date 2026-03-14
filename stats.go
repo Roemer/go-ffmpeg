@@ -140,7 +140,7 @@ func (r *Runner) GetReplaygainStats(arguments *FFmpegArguments) *ReplaygainStats
 	foundGain := notFound
 	foundPeak := notFound
 
-	argFields := strings.Fields(arguments.ArgumentString())
+	argFields := arguments.ArgumentSlice()
 	exitCode, _ := runWithStderr(r.Settings.ExecutablePath, argFields, func(line string) {
 		fmt.Println(line) // mirror C# Console.WriteLine
 		if m := trackGainRe.FindStringSubmatch(line); m != nil {
@@ -171,7 +171,7 @@ func (r *Runner) GetLoudnormStatsFromArgs(arguments *FFmpegArguments) *LoudnormS
 	foundTruePeak := notFound
 	foundLra := notFound
 
-	argFields := strings.Fields(arguments.ArgumentString())
+	argFields := arguments.ArgumentSlice()
 	exitCode, _ := runWithStderr(r.Settings.ExecutablePath, argFields, func(line string) {
 		m := valueRe.FindStringSubmatch(line)
 		if m == nil {
@@ -233,7 +233,7 @@ func (r *Runner) GetVolumeStats(src string, index int) *VolumeStats {
 		AddMapping(NewMapping(0).SetStreamType(StreamTypeAudio)).
 		AddAudioFilter(NewAudioFilter().Volumedetect().SetIndex(index))
 
-	argFields := strings.Fields(args.ArgumentString())
+	argFields := args.ArgumentSlice()
 	exitCode, _ := runWithStderr(r.Settings.ExecutablePath, argFields, func(line string) {
 		if m := meanRe.FindStringSubmatch(line); m != nil {
 			if v, err := parseFloat(m[1]); err == nil {
@@ -276,7 +276,7 @@ func (r *Runner) GetEbur128Stats(src string, index int) *Ebur128Stats {
 		AddMapping(NewMapping(0).SetStreamType(StreamTypeAudio)).
 		AddAudioFilter(NewAudioFilter().Ebur128().SetIndex(index))
 
-	argFields := strings.Fields(args.ArgumentString())
+	argFields := args.ArgumentSlice()
 	exitCode, _ := runWithStderr(r.Settings.ExecutablePath, argFields, func(line string) {
 		extract := func() (float64, bool) {
 			m := parseRe.FindStringSubmatch(line)

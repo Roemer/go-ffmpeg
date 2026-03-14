@@ -19,11 +19,11 @@ func NewRunner(settings *FFmpegSettings) *Runner {
 }
 
 func (r *Runner) ExecuteFFmpegArgs(arguments *FFmpegArguments) (int, error) {
-	argStr := arguments.ArgumentString()
+	args := arguments.ArgumentSlice()
 	if r.Settings.ShowCommandInConsole {
-		fmt.Println(argStr)
+		fmt.Println(arguments.ArgumentString())
 	}
-	return r.executeCmd(r.Settings.ExecutablePath, argStr)
+	return r.executeCmd(r.Settings.ExecutablePath, args)
 }
 
 func (r *Runner) ExecuteFFmpegRaw(rawArgs ...string) (int, error) {
@@ -42,11 +42,11 @@ func (r *Runner) ExecuteFFmpegRaw(rawArgs ...string) (int, error) {
 	if settings.ShowCommandInConsole {
 		fmt.Println(strings.Join(args, " "))
 	}
-	return r.executeCmd(settings.ExecutablePath, strings.Join(args, " "))
+	return r.executeCmd(settings.ExecutablePath, args)
 }
 
-func (r *Runner) executeCmd(executable, argString string) (int, error) {
-	cmd := exec.Command(executable, strings.Fields(argString)...)
+func (r *Runner) executeCmd(executable string, args []string) (int, error) {
+	cmd := exec.Command(executable, args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	if r.Settings.LogMessageAction != nil {

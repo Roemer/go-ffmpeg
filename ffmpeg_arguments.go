@@ -51,7 +51,11 @@ func NewFFmpegArguments() *FFmpegArguments {
 }
 
 func (f *FFmpegArguments) ArgumentString() string {
-	return strings.Join(f.buildArguments(), " ")
+	return strings.Join(f.ArgumentSlice(), " ")
+}
+
+func (f *FFmpegArguments) ArgumentSlice() []string {
+	return f.buildArguments()
 }
 
 func (f *FFmpegArguments) AddInput(inputFile *InputFile) *FFmpegArguments {
