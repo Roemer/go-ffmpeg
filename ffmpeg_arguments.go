@@ -221,7 +221,7 @@ func (f *FFmpegArguments) buildArguments() []string {
 		args = append(args, af.GetParameters()...)
 	}
 	if f.CopyAll {
-		args = append(args, "-c copy")
+		args = append(args, "-c", "copy")
 	}
 	for _, m := range f.Mappings {
 		args = append(args, m.GetParameters()...)
@@ -259,7 +259,6 @@ func (f *FFmpegArguments) buildArguments() []string {
 	if f.Async != nil {
 		args = append(args, "-async", fmt.Sprintf("%d", *f.Async))
 	}
-	args = append(args, "-audio_service_type", "ma")
 	if f.Output != nil {
 		args = append(args, f.Output.GetParameters()...)
 	}
