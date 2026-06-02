@@ -74,10 +74,10 @@ func (m *Metadata) GetParameters() []string {
 		prefix.WriteString(":s")
 	}
 	if m.streamType != StreamTypeNone {
-		prefix.WriteString(fmt.Sprintf(":%s", m.streamType))
+		fmt.Fprintf(&prefix, ":%s", m.streamType)
 	}
 	if m.streamIndex >= 0 {
-		prefix.WriteString(fmt.Sprintf(":%d", m.streamIndex))
+		fmt.Fprintf(&prefix, ":%d", m.streamIndex)
 	}
 	p := prefix.String()
 
