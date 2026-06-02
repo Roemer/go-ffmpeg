@@ -16,6 +16,7 @@ const (
 type StreamType string
 
 const (
+	StreamTypeNone        StreamType = ""
 	StreamTypeVideo       StreamType = "v"
 	StreamTypeAudio       StreamType = "a"
 	StreamTypeSubtitles   StreamType = "s"

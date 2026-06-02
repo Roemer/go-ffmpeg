@@ -11,21 +11,31 @@ type metadataValue struct {
 }
 
 type Metadata struct {
-	StreamIndex int
-	StreamType  *StreamType
+	streamIndex int
+	streamType  StreamType
 	values      map[string]metadataValue
 }
 
-func NewMetadata(streamIndex int, streamType *StreamType) *Metadata {
+func NewMetadata() *Metadata {
 	return &Metadata{
-		StreamIndex: streamIndex,
-		StreamType:  streamType,
+		streamIndex: 0,
+		streamType:  StreamTypeNone,
 		values:      make(map[string]metadataValue),
 	}
 }
 
 func (m *Metadata) set(key, value string, pack bool) *Metadata {
 	m.values[key] = metadataValue{Value: value, PackInQuotes: pack}
+	return m
+}
+
+func (m *Metadata) StreamType(streamType StreamType) *Metadata {
+	m.streamType = streamType
+	return m
+}
+
+func (m *Metadata) StreamIndex(index int) *Metadata {
+	m.streamIndex = index
 	return m
 }
 
@@ -61,14 +71,14 @@ func (m *Metadata) Custom(key, value string, pack bool) *Metadata { return m.set
 func (m *Metadata) GetParameters() []string {
 	var prefix strings.Builder
 	prefix.WriteString("-metadata")
-	if m.StreamIndex >= 0 {
+	if m.streamIndex >= 0 {
 		prefix.WriteString(":s")
 	}
-	if m.StreamType != nil {
-		prefix.WriteString(fmt.Sprintf(":%s", *m.StreamType))
+	if m.streamType != StreamTypeNone {
+		prefix.WriteString(fmt.Sprintf(":%s", m.streamType))
 	}
-	if m.StreamIndex >= 0 {
-		prefix.WriteString(fmt.Sprintf(":%d", m.StreamIndex))
+	if m.streamIndex >= 0 {
+		prefix.WriteString(fmt.Sprintf(":%d", m.streamIndex))
 	}
 	p := prefix.String()
 
