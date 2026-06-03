@@ -5,44 +5,40 @@ import (
 	"strings"
 )
 
-type metadataValue struct {
-	Value string
-}
-
 type Metadata struct {
-	streamIndex int
-	streamType  StreamType
-	values      map[string]metadataValue
+	StreamIndex int
+	StreamType  StreamType
+	Values      map[string]string
 }
 
 func NewMetadata() *Metadata {
 	return &Metadata{
-		streamIndex: 0,
-		streamType:  StreamTypeNone,
-		values:      make(map[string]metadataValue),
+		StreamIndex: 0,
+		StreamType:  StreamTypeNone,
+		Values:      make(map[string]string),
 	}
 }
 
 func (m *Metadata) set(key, value string) *Metadata {
-	m.values[key] = metadataValue{Value: value}
+	m.Values[key] = value
 	return m
 }
 
-func (m *Metadata) StreamType(streamType StreamType) *Metadata {
-	m.streamType = streamType
+func (m *Metadata) SetStreamType(streamType StreamType) *Metadata {
+	m.StreamType = streamType
 	return m
 }
 
-func (m *Metadata) StreamIndex(index int) *Metadata {
-	m.streamIndex = index
+func (m *Metadata) SetStreamIndex(index int) *Metadata {
+	m.StreamIndex = index
 	return m
 }
 
 func (m *Metadata) Title(title string) *Metadata { return m.set("title", title) }
 func (m *Metadata) TitleAppend(s string) *Metadata {
-	v := m.values["title"]
-	v.Value += s
-	m.values["title"] = v
+	v := m.Values["title"]
+	v += s
+	m.Values["title"] = v
 	return m
 }
 func (m *Metadata) Language(lang string) *Metadata { return m.set("language", lang) }
@@ -70,21 +66,20 @@ func (m *Metadata) Custom(key, value string) *Metadata { return m.set(key, value
 func (m *Metadata) GetParameters() []string {
 	var prefix strings.Builder
 	prefix.WriteString("-metadata")
-	if m.streamIndex >= 0 {
+	if m.StreamIndex >= 0 {
 		prefix.WriteString(":s")
 	}
-	if m.streamType != StreamTypeNone {
-		fmt.Fprintf(&prefix, ":%s", m.streamType)
+	if m.StreamType != StreamTypeNone {
+		fmt.Fprintf(&prefix, ":%s", m.StreamType)
 	}
-	if m.streamIndex >= 0 {
-		fmt.Fprintf(&prefix, ":%d", m.streamIndex)
+	if m.StreamIndex >= 0 {
+		fmt.Fprintf(&prefix, ":%d", m.StreamIndex)
 	}
 	p := prefix.String()
 
 	var result []string
-	for k, v := range m.values {
-		val := v.Value
-		result = append(result, p, fmt.Sprintf("%s=%s", k, val))
+	for k, v := range m.Values {
+		result = append(result, p, fmt.Sprintf("%s=%s", k, v))
 	}
 	return result
 }
