@@ -2,6 +2,7 @@ package goffmpeg
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 )
 
@@ -25,7 +26,7 @@ type FFmpegArguments struct {
 	MapChaptersIndex   *int
 	MaxInterleaveDelta *int
 	FastStart          bool
-	IgnoreErrors       bool
+	ErrorDetection     []ErrorDetectionFlag
 	MapMetaData        bool
 	Async              *int
 	DisableVideo       bool
@@ -163,9 +164,14 @@ func (f *FFmpegArguments) SetMaxInterleaveDelta(v int) *FFmpegArguments {
 	return f
 }
 
-func (f *FFmpegArguments) SetFastStart(v bool) *FFmpegArguments    { f.FastStart = v; return f }
-func (f *FFmpegArguments) SetIgnoreErrors(v bool) *FFmpegArguments { f.IgnoreErrors = v; return f }
-func (f *FFmpegArguments) SetMapMetaData(v bool) *FFmpegArguments  { f.MapMetaData = v; return f }
+func (f *FFmpegArguments) SetFastStart(v bool) *FFmpegArguments   { f.FastStart = v; return f }
+func (f *FFmpegArguments) SetXError(v bool) *FFmpegArguments      { f.XError = v; return f }
+func (f *FFmpegArguments) SetMapMetaData(v bool) *FFmpegArguments { f.MapMetaData = v; return f }
+
+func (f *FFmpegArguments) SetErrorDetection(flags ...ErrorDetectionFlag) *FFmpegArguments {
+	f.ErrorDetection = slices.Clone(flags)
+	return f
+}
 
 func (f *FFmpegArguments) buildArguments() []string {
 	var args []string
@@ -182,8 +188,12 @@ func (f *FFmpegArguments) buildArguments() []string {
 	} else {
 		args = append(args, "-nostats")
 	}
-	if f.IgnoreErrors {
-		args = append(args, "-err_detect", "ignore_err")
+	if len(f.ErrorDetection) > 0 {
+		values := make([]string, 0, len(f.ErrorDetection))
+		for _, flag := range f.ErrorDetection {
+			values = append(values, string(flag))
+		}
+		args = append(args, "-err_detect", strings.Join(values, "+"))
 	}
 	if f.Overwrite {
 		args = append(args, "-y")

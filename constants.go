@@ -13,6 +13,29 @@ const (
 	LogLevelDebug   LogLevel = "debug"
 )
 
+type ErrorDetectionFlag string
+
+const (
+	// verify embedded CRCs
+	ErrorDetectionFlagCRCCheck ErrorDetectionFlag = "crccheck"
+	// detect bitstream specification deviations
+	ErrorDetectionFlagBitstream ErrorDetectionFlag = "bitstream"
+	// detect improper bitstream length
+	ErrorDetectionFlagBuffer ErrorDetectionFlag = "buffer"
+	// abort decoding on minor error detection
+	ErrorDetectionFlagExplode ErrorDetectionFlag = "explode"
+	// ignore decoding errors, and continue decoding.
+	// This is useful if you want to analyze the content of a video and thus want everything to be decoded no matter what.
+	// This option will not result in a video that is pleasing to watch in case of errors.
+	ErrorDetectionFlagIgnoreErr ErrorDetectionFlag = "ignore_err"
+	// consider things that violate the spec and have not been seen in the wild as errors
+	ErrorDetectionFlagCareful ErrorDetectionFlag = "careful"
+	// consider all spec non compliancies as errors
+	ErrorDetectionFlagCompliant ErrorDetectionFlag = "compliant"
+	// consider things that a sane encoder should not do as an error
+	ErrorDetectionFlagAggressive ErrorDetectionFlag = "aggressive"
+)
+
 type StreamType string
 
 const (
