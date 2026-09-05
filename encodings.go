@@ -4,6 +4,7 @@ import "fmt"
 
 type encodingBase struct {
 	StreamIndex int
+	Tag         string
 }
 
 func newEncodingBase() encodingBase {
@@ -24,6 +25,13 @@ func (e *encodingBase) buildParam(encodingType, codecName string, extra map[stri
 		}
 		params = append(params, key, v)
 	}
+	if e.Tag != "" {
+		tag := fmt.Sprintf("-tag:%s", encodingType)
+		if e.StreamIndex >= 0 {
+			tag += fmt.Sprintf(":%d", e.StreamIndex)
+		}
+		params = append(params, tag, e.Tag)
+	}
 	return params
 }
 
@@ -37,7 +45,8 @@ func NewVideoCopyEncoding() *VideoCopyEncoding {
 	return &VideoCopyEncoding{encodingBase: newEncodingBase()}
 }
 
-func (e *VideoCopyEncoding) SetIndex(i int) *VideoCopyEncoding { e.StreamIndex = i; return e }
+func (e *VideoCopyEncoding) SetIndex(i int) *VideoCopyEncoding    { e.StreamIndex = i; return e }
+func (e *VideoCopyEncoding) SetTag(tag string) *VideoCopyEncoding { e.Tag = tag; return e }
 
 func (e *VideoCopyEncoding) GetParameters() []string {
 	return e.buildParam("v", "copy", nil)
@@ -53,7 +62,8 @@ func NewFFV1VideoEncoding() *FFV1VideoEncoding {
 	return &FFV1VideoEncoding{encodingBase: newEncodingBase()}
 }
 
-func (e *FFV1VideoEncoding) SetIndex(i int) *FFV1VideoEncoding { e.StreamIndex = i; return e }
+func (e *FFV1VideoEncoding) SetIndex(i int) *FFV1VideoEncoding    { e.StreamIndex = i; return e }
+func (e *FFV1VideoEncoding) SetTag(tag string) *FFV1VideoEncoding { e.Tag = tag; return e }
 
 func (e *FFV1VideoEncoding) GetParameters() []string {
 	return e.buildParam("v", "ffv1", map[string]string{
@@ -88,6 +98,7 @@ func NewX264VideoEncoding() *X264VideoEncoding {
 }
 
 func (e *X264VideoEncoding) SetIndex(i int) *X264VideoEncoding          { e.StreamIndex = i; return e }
+func (e *X264VideoEncoding) SetTag(tag string) *X264VideoEncoding       { e.Tag = tag; return e }
 func (e *X264VideoEncoding) SetPreset(p X264Preset) *X264VideoEncoding  { e.Preset = p; return e }
 func (e *X264VideoEncoding) SetTune(t X264Tune) *X264VideoEncoding      { e.Tune = t; return e }
 func (e *X264VideoEncoding) SetCrf(crf float64) *X264VideoEncoding      { e.Crf = crf; return e }
@@ -135,7 +146,8 @@ func NewAudioCopyEncoding() *AudioCopyEncoding {
 	return &AudioCopyEncoding{encodingBase: newEncodingBase()}
 }
 
-func (e *AudioCopyEncoding) SetIndex(i int) *AudioCopyEncoding { e.StreamIndex = i; return e }
+func (e *AudioCopyEncoding) SetIndex(i int) *AudioCopyEncoding    { e.StreamIndex = i; return e }
+func (e *AudioCopyEncoding) SetTag(tag string) *AudioCopyEncoding { e.Tag = tag; return e }
 
 func (e *AudioCopyEncoding) GetParameters() []string {
 	return e.buildParam("a", "copy", nil)
@@ -155,8 +167,9 @@ func NewAacAudioEncoding() *AacAudioEncoding {
 	return &AacAudioEncoding{encodingBase: newEncodingBase(), Bitrate: 160}
 }
 
-func (e *AacAudioEncoding) SetIndex(i int) *AacAudioEncoding   { e.StreamIndex = i; return e }
-func (e *AacAudioEncoding) SetBitrate(b int) *AacAudioEncoding { e.Bitrate = b; return e }
+func (e *AacAudioEncoding) SetIndex(i int) *AacAudioEncoding    { e.StreamIndex = i; return e }
+func (e *AacAudioEncoding) SetTag(tag string) *AacAudioEncoding { e.Tag = tag; return e }
+func (e *AacAudioEncoding) SetBitrate(b int) *AacAudioEncoding  { e.Bitrate = b; return e }
 func (e *AacAudioEncoding) SetChannelLayout(l string) *AacAudioEncoding {
 	e.ChannelLayout = l
 	return e
@@ -184,8 +197,9 @@ func NewAc3AudioEncoding() *Ac3AudioEncoding {
 	return &Ac3AudioEncoding{encodingBase: newEncodingBase(), Bitrate: 192}
 }
 
-func (e *Ac3AudioEncoding) SetIndex(i int) *Ac3AudioEncoding   { e.StreamIndex = i; return e }
-func (e *Ac3AudioEncoding) SetBitrate(b int) *Ac3AudioEncoding { e.Bitrate = b; return e }
+func (e *Ac3AudioEncoding) SetIndex(i int) *Ac3AudioEncoding    { e.StreamIndex = i; return e }
+func (e *Ac3AudioEncoding) SetTag(tag string) *Ac3AudioEncoding { e.Tag = tag; return e }
+func (e *Ac3AudioEncoding) SetBitrate(b int) *Ac3AudioEncoding  { e.Bitrate = b; return e }
 func (e *Ac3AudioEncoding) SetChannelLayout(l string) *Ac3AudioEncoding {
 	e.ChannelLayout = l
 	return e
@@ -212,8 +226,9 @@ func NewMp3AudioEncoding() *Mp3AudioEncoding {
 	return &Mp3AudioEncoding{encodingBase: newEncodingBase(), Bitrate: 192}
 }
 
-func (e *Mp3AudioEncoding) SetIndex(i int) *Mp3AudioEncoding   { e.StreamIndex = i; return e }
-func (e *Mp3AudioEncoding) SetBitrate(b int) *Mp3AudioEncoding { e.Bitrate = b; return e }
+func (e *Mp3AudioEncoding) SetIndex(i int) *Mp3AudioEncoding    { e.StreamIndex = i; return e }
+func (e *Mp3AudioEncoding) SetTag(tag string) *Mp3AudioEncoding { e.Tag = tag; return e }
+func (e *Mp3AudioEncoding) SetBitrate(b int) *Mp3AudioEncoding  { e.Bitrate = b; return e }
 
 func (e *Mp3AudioEncoding) GetParameters() []string {
 	return e.buildParam("a", "libmp3lame", map[string]string{"-b:a": fmt.Sprintf("%dk", e.Bitrate)})
