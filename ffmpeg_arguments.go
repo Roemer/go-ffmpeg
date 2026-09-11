@@ -25,6 +25,7 @@ type FFmpegArguments struct {
 	Overwrite          bool
 	MapChaptersIndex   *int
 	MaxInterleaveDelta *int
+	MaxMuxingQueueSize *int
 	FastStart          bool
 	ErrorDetection     []ErrorDetectionFlag
 	MapMetaData        bool
@@ -164,6 +165,16 @@ func (f *FFmpegArguments) SetMaxInterleaveDelta(v int) *FFmpegArguments {
 	return f
 }
 
+func (f *FFmpegArguments) SetMaxMuxingQueueSize(v int) *FFmpegArguments {
+	f.MaxMuxingQueueSize = Ptr(v)
+	return f
+}
+
+func (f *FFmpegArguments) SetAsync(v int) *FFmpegArguments {
+	f.Async = Ptr(v)
+	return f
+}
+
 func (f *FFmpegArguments) SetFastStart(v bool) *FFmpegArguments   { f.FastStart = v; return f }
 func (f *FFmpegArguments) SetXError(v bool) *FFmpegArguments      { f.XError = v; return f }
 func (f *FFmpegArguments) SetMapMetaData(v bool) *FFmpegArguments { f.MapMetaData = v; return f }
@@ -259,6 +270,9 @@ func (f *FFmpegArguments) buildArguments() []string {
 	}
 	if f.MaxInterleaveDelta != nil {
 		args = append(args, "-max_interleave_delta", fmt.Sprintf("%d", *f.MaxInterleaveDelta))
+	}
+	if f.MaxMuxingQueueSize != nil {
+		args = append(args, "-max_muxing_queue_size", fmt.Sprintf("%d", *f.MaxMuxingQueueSize))
 	}
 	if f.FastStart {
 		args = append(args, "-movflags", "faststart")

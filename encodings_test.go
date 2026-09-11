@@ -16,3 +16,21 @@ func TestEncodingTags(t *testing.T) {
 		t.Fatalf("audio parameters = %v, want %v", audio, want)
 	}
 }
+
+func TestMaxMuxingQueueSize(t *testing.T) {
+	args := NewFFmpegArguments().
+		SetMaxMuxingQueueSize(1024).
+		SetOutput(NewOutputFile("output.mp4"))
+
+	slice := args.ArgumentSlice()
+	found := false
+	for i := 0; i < len(slice)-1; i++ {
+		if slice[i] == "-max_muxing_queue_size" && slice[i+1] == "1024" {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Fatalf("expected -max_muxing_queue_size 1024 in %v", slice)
+	}
+}
